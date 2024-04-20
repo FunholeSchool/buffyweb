@@ -1,37 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Centered Text with Gradient</title>
-<style>
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column; /* Adjust if needed */
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0; /* background color */
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuffyWeb</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #f0f0f0; /* Default background color */
+            background-size: cover;
+            background-position: center;
+            transition: background-color 0.3s ease;
+        }
 
-  .gradient-text {
-    font-family: 'Roboto', sans-serif; /* Use Roboto font family */
-    font-size: 100px; /* Increased font size */
-    font-weight: bold; /* Apply bold style */
-    background: linear-gradient(45deg, yellow, red);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
-    margin-bottom: 20px; /* Adjust if needed */
-  }
-</style>
+        .title-container {
+            position: relative;
+        }
+
+        h1 {
+            font-size: 5em; /* Changed font size to 200px */
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .search-container {
+            position: absolute;
+            top: calc(100% + 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            width: 400px;
+            margin-right: 10px;
+            font-size: 1.2em;
+            color: #333;
+            background-color: #fff;
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .menu-button { /* Added styles for the three dots button */
+            padding: 15px 20px; /* Adjusted padding */
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 10px; /* Rounded corner square button */
+            cursor: pointer;
+            font-size: 1.2em;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu.active {
+            display: block;
+        }
+
+        .menu-close-button {
+            background: linear-gradient(45deg, #ff0000, #990000);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dark-theme-button,
+        .upload-image-button,
+        .reset-background-button {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #searchResults {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .font-size-dropdown {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        .upload-image-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-image-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Added styles for the music player button */
+        .music-player-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .music-player-menu {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 200px;
+            z-index: 9998;
+            transform: translateX(300px);
+            transition: transform 0.3s;
+        }
+
+        .music-player-menu.active {
+            transform: translateX(0);
+        }
+
+        .music-service-button {
+            display: block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .music-service-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <div class="gradient-text">BuffyWeb</div>
+    <div class="title-container">
+        <h1>BuffyWeb</h1>
 
-  <!-- Google Programmable Search Engine Code -->
-  <script async src="https://cse.google.com/cse.js?cx=7308b997281824f06"></script>
-  <div class="gcse-search"></div>
+        <!-- Search input and button -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Enter your search query" onkeypress="handleKeyPress(event)">
+            <button onclick="search()">Search</button>
+        </div>
+    </div>
+
+    <!-- Menu button -->
+    <button class="menu-button" onclick="toggleMenu()">...</button>
+
+    <!-- Menu -->
+    <div class="menu" id="menu">
+        <button class="menu-close-button" onclick="toggleMenu()">X</button>
+        <button class="dark-theme-button" onclick="toggleDarkTheme()">Dark/Light Theme</button>
+        <input type="file" class="upload-image-button" onchange="handleImageUpload(event)">
+        <button class="reset-background-button" onclick="resetBackground()">Reset Background</button>
+        <button class="font-picker-button" onclick="showFontPicker()">Font Picker</button>
+        <div id="fontPicker" style="display: none;">
+            <input type="color" id="colorPicker" onchange="changeFontColor()">
+            <select class="font-size-dropdown" onchange="changeFontSize()">
+                <option value="48">Small</option>
+                <option value="125">Medium</option>
+                <option value="200">Large</option>
+            </select>
+        </div>
+        <select id="searchEngineDropdown" onchange="changeSearchEngine()">
+            <option value="https://www.bing.com/search?q=">Bing</option>
+            <option value="https://www.google.com/search?q=">Google</option>
+            <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+            <option value="https://search.yahoo.com/search?p=">Yahoo</option>
+        </select>
+    </div>
+
+    <!-- Search results container -->
+    <div id="searchResults">
+        <!-- Search results will be displayed here -->
+    </div>
+
+    <!-- Music player button -->
+    <button class="music-player-button" onclick="toggleMusicPlayer()">▶️</button>
+
+    <!-- Music player menu -->
+    <div class="music-player-menu" id="musicPlayerMenu">
+        <button class="music-service-button">Connect to Amazon Music</button>
+        <button class="music-service-button">Connect to Spotify</button>
+        <button class="music-service-button">Connect to YouTube Music</button>
+        <button class="music-service-button">Connect to Apple Music</button>
+    </div>
+
+    <script>
+        // Retrieve background image URL from localStorage
+        var backgroundImageURL = localStorage.getItem('backgroundImageURL');
+        if (backgroundImageURL) {
+            document.body.style.backgroundImage = 'url(' + backgroundImageURL + ')';
+        }
+
+        // Retrieve font color and size from localStorage
+        var fontColor = localStorage.getItem('fontColor') || '#333';
+        var fontSize = localStorage.getItem('fontSize') || '5em';
+
+        // Apply retrieved font color and size to elements
+        document.querySelector('h1').style.color = fontColor;
+        document.querySelector('h1').style.fontSize = fontSize;
+
+        // Update color picker value to match current font color
+        document.getElementById('colorPicker').value = fontColor;
+
+        // Retrieve search engine preference from localStorage
+        var searchEngine = localStorage.getItem('searchEngine') || 'https://www.google.com/search?q=';
+
+        function search() {
+            var query = document.getElementById('searchInput').value;
+            window.location.href = searchEngine + encodeURIComponent(query);
+        }
+
+        function toggleMenu() {
+            var menuContainer = document.querySelector('.menu');
+            menuContainer.classList.toggle('active');
+        }
+
+        function toggleDarkTheme() {
+            var currentTheme = document.body.style.backgroundColor;
+            if (currentTheme === 'rgb(34, 34, 34)' || currentTheme === '#222') {
+                document.body.style.backgroundColor = '#f0f0f0';
+                document.body.style.color = '#333';
+            } else {
+                document.body.style.backgroundColor = '#222';
+                document.body.style.color = '#fff';
+            }
+        }
+
+        function handleImageUpload(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var imageURL = e.target.result;
+                localStorage.setItem('backgroundImageURL', imageURL);
+                document.body.style.backgroundImage = 'url(' + imageURL + ')';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                search();
+            }
+        }
+
+        function resetBackground() {
+            localStorage.removeItem('backgroundImageURL');
+            document.body.style.backgroundImage = 'none';
+        }
+
+        function showFontPicker() {
+            var fontPicker = document.getElementById('fontPicker');
+            fontPicker.style.display = (fontPicker.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function changeFontColor() {
+            var color = document.getElementById('colorPicker').value;
+            document.querySelector('h1').style.color = color;
+            localStorage.setItem('fontColor', color);
+        }
+
+        function changeFontSize() {
+            var size = document.querySelector('.font-size-dropdown').value;
+            document.querySelector('h1').style.fontSize = size + 'px';
+            localStorage.setItem('fontSize', size + 'px');
+        }
+
+        function changeSearchEngine() {
+            searchEngine = document.getElementById('searchEngineDropdown').value;
+            localStorage.setItem('searchEngine', searchEngine);
+        }
+
+        // Toggle music player menu
+        function toggleMusicPlayer() {
+            var musicPlayerMenu = document.getElementById('musicPlayerMenu');
+            musicPlayerMenu.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
