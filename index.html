@@ -1,359 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buffyweb Search Engine</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-<style>
-  /* General Styles */
-  body {
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-  }
-  .title {
-    font-size: 96px;
-    font-weight: bold;
-    margin-bottom: 40px;
-  }
-  
-  /* Search Box Styles */
-  .search-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .search-box {
-    width: 400px;
-    padding: 15px;
-    font-size: 20px;
-    border-radius: 30px;
-    border: 1px solid #ccc;
-    outline: none;
-    transition: box-shadow 0.3s ease-in-out;
-  }
-
-  .search-box:focus {
-    box-shadow: 0 0 10px blue;
-  }
-
-  .dropdown {
-    position: absolute;
-    top: 70px;
-    width: 100%;
-    display: none;
-    flex-direction: column;
-    border-radius: 8px;
-    background-color: #f1f1f1;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    z-index: 5;
-  }
-
-  .dropdown.show {
-    display: flex;
-  }
-
-  .dropdown-item {
-    padding: 10px;
-    font-size: 18px;
-    cursor: pointer;
-  }
-
-  .dropdown-item:hover {
-    background-color: #ddd;
-  }
-
-  /* Bottom Menu Styles */
-  .bottom-menu {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    gap: 10px;
-  }
-
-  .menu-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .menu-button:hover {
-    background-color: #555;
-  }
-
-  .menu-action-button img {
-    width: 30px;
-    height: 30px;
-  }
-
-  /* Overlay and Settings Menu */
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 10;
-  }
-
-  .overlay.show {
-    display: block;
-  }
-
-  .settings-menu {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    height: 70%;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    display: none;
-    z-index: 20;
-    border-radius: 20px;
-    overflow: auto;
-    transition: opacity 0.3s ease-in-out;
-  }
-
-  .settings-menu.show {
-    display: block;
-  }
-
-  /* Background Settings */
-  .background-settings {
-    border-radius: 10px;
-    padding: 20px;
-    background-color: #f1f1f1;
-    margin-bottom: 20px;
-    width: 50%;
-  }
-
-  .background-settings h3 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-
-  .import-image input[type="file"] {
-    padding: 5px;
-  }
-
-  /* Button Style */
-  .button-64 {
-    align-items: center;
-    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
-    border: 0;
-    border-radius: 8px;
-    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
-    color: #FFFFFF;
-    display: flex;
-    font-size: 20px;
-    justify-content: center;
-    padding: 3px;
-    cursor: pointer;
-  }
-
-  .button-64 span {
-    background-color: rgb(5, 6, 45);
-    padding: 16px 24px;
-    border-radius: 6px;
-    width: 100%;
-    height: 100%;
-    transition: 300ms;
-  }
-
-  .button-64:hover span {
-    background: none;
-  }
-
-  /* Ripple effect */
-  .search-box:focus {
-    box-shadow: 0 0 10px blue;
-  }
-
-  .search-box {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(0, 0, 255, 0.5);
-    transform: scale(0);
-    animation: ripple-animation 0.6s linear;
-  }
-
-  @keyframes ripple-animation {
-    to {
-      transform: scale(4);
-      opacity: 0;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buffyweb Search Engine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      transition: background 0.3s;
     }
-  }
+    .title {
+      font-size: 96px;
+      font-weight: bold;
+      margin-bottom: 40px;
+    }
 
-</style>
+    /* Search Box Styles */
+    .search-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .search-box {
+      width: 400px;
+      padding: 15px;
+      font-size: 20px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .search-box:focus {
+      box-shadow: 0 0 10px blue;
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 70px;
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      border-radius: 8px;
+      background-color: #f1f1f1;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .dropdown.show {
+      display: flex;
+    }
+
+    .dropdown-item {
+      padding: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background-color: #ddd;
+    }
+
+    /* Bottom Menu Styles */
+    .bottom-menu {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .menu-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .menu-button:hover {
+      background-color: #555;
+    }
+
+    .menu-action-button img {
+      width: 30px;
+      height: 30px;
+    }
+
+    /* Slide-in Menu */
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: #fff;
+      box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+      transition: left 0.3s ease-in-out;
+      z-index: 100;
+    }
+
+    .side-menu.open {
+      left: 0;
+    }
+
+    .side-menu .close-btn {
+      font-size: 30px;
+      padding: 20px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .side-menu ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 50px;
+    }
+
+    .side-menu ul li {
+      padding: 15px;
+      cursor: pointer;
+    }
+
+    .side-menu ul li:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 90;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    /* Button Style */
+    .button-64 {
+      align-items: center;
+      background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+      border: 0;
+      border-radius: 8px;
+      box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+      color: #FFFFFF;
+      display: flex;
+      font-size: 20px;
+      justify-content: center;
+      padding: 3px;
+      cursor: pointer;
+    }
+
+    .button-64 span {
+      background-color: rgb(5, 6, 45);
+      padding: 16px 24px;
+      border-radius: 6px;
+      width: 100%;
+      height: 100%;
+      transition: 300ms;
+    }
+
+    .button-64:hover span {
+      background: none;
+    }
+
+    /* Ripple effect */
+    .search-box:focus {
+      box-shadow: 0 0 10px blue;
+    }
+
+    .search-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 0, 255, 0.5);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+  </style>
 </head>
 <body>
 
-<div class="title">Buffyweb</div>
+  <div class="title">Buffyweb</div>
 
-<div class="search-container">
-  <input type="text" class="search-box" placeholder="Search here..." id="searchInput" onfocus="showRecentSearches()" onkeydown="handleEnter(event)" onclick="addRipple(event)">
-  <div class="dropdown" id="dropdown"></div>
-</div>
-
-<div class="bottom-menu">
-  <div class="menu-button" onclick="openSettings()">
-    <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="settings icon">
+  <div class="search-container">
+    <input type="text" class="search-box" placeholder="Search here..." id="searchInput" onfocus="showRecentSearches()" onkeydown="handleEnter(event)" onclick="addRipple(event)">
+    <div class="dropdown" id="dropdown"></div>
   </div>
-  <div class="menu-button" onclick="openNews()">
-    <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" alt="news icon">
-  </div>
-  <div class="menu-button" onclick="openWeather()">
-    <img src="https://img.icons8.com/ios-filled/50/ffffff/weather.png" alt="weather icon">
-  </div>
-</div>
 
-<!-- Overlay and Settings Menu -->
-<div class="overlay" id="overlay" onclick="closeSettingsMenu()"></div>
-
-<div class="settings-menu" id="settingsMenu">
-  <div class="background-settings">
-    <h3>Background Image</h3>
-    <div class="import-image">
-      <label for="bgImageInput">Import Image:</label>
-      <input type="file" id="bgImageInput" accept="image/*" onchange="previewImage(event)">
+  <div class="bottom-menu">
+    <div class="menu-button" onclick="toggleMenu()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/menu.png" alt="hamburger icon">
     </div>
-    <button class="button-64" role="button" onclick="clearBackgroundImage()">
-      <span class="text">Clear Background</span>
-    </button>
   </div>
-</div>
 
-<script>
-  // Toggle settings menu
-  function openSettings() {
-    document.getElementById('settingsMenu').classList.add('show');
-    document.getElementById('overlay').classList.add('show');
-  }
+  <!-- Overlay and Side Menu -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
-  function closeSettingsMenu() {
-    document.getElementById('settingsMenu').classList.remove('show');
-    document.getElementById('overlay').classList.remove('show');
-  }
+  <div class="side-menu" id="sideMenu">
+    <div class="close-btn" onclick="closeMenu()">×</div>
+    <ul>
+      <li onclick="openSettings()">Settings</li>
+      <li onclick="openNews()">News</li>
+      <li onclick="openWeather()">Weather</li>
+    </ul>
+  </div>
 
-  // Open News and Weather functions
-  function openNews() {
-    alert('News button clicked!');
-  }
+  <!-- Settings Menu -->
+  <div class="settings-menu" id="settingsMenu">
+    <div class="background-settings">
+      <h3>Background Image</h3>
+      <div class="import-image">
+        <label for="bgImageInput">Import Image:</label>
+        <input type="file" id="bgImageInput" accept="image/*" onchange="previewImage(event)">
+      </div>
+      <button class="button-64" role="button" onclick="clearBackgroundImage()">
+        <span class="text">Clear Background</span>
+      </button>
+    </div>
+  </div>
 
-  function openWeather() {
-    alert('Weather button clicked!');
-  }
-
-  // Handle search functionality
-  function handleEnter(event) {
-    if (event.key === 'Enter') {
-      performSearch();
+  <script>
+    // Toggle side menu (open/close)
+    function toggleMenu() {
+      const menu = document.getElementById('sideMenu');
+      const overlay = document.getElementById('overlay');
+      const isOpen = menu.classList.contains('open');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        menu.classList.add('open');
+        overlay.classList.add('show');
+      }
     }
-  }
 
-  function performSearch() {
-    const query = document.getElementById('searchInput').value;
-    window.location.href = `https://www.google.com/search?q=${query}`;
-    saveSearch(query);
-  }
+    // Close the menu
+    function closeMenu() {
+      const menu = document.getElementById('sideMenu');
+      const overlay = document.getElementById('overlay');
+      menu.classList.remove('open');
+      overlay.classList.remove('show');
+    }
 
-  // Store and display recent searches
-  function saveSearch(query) {
-    let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-    searches = [query, ...searches.filter(search => search !== query)].slice(0, 5);
-    localStorage.setItem('recentSearches', JSON.stringify(searches));
-  }
+    // Handle search functionality
+    function handleEnter(event) {
+      if (event.key === 'Enter') {
+        performSearch();
+      }
+    }
 
-  function showRecentSearches() {
-    const dropdown = document.getElementById('dropdown');
-    dropdown.innerHTML = '';
-    const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-    if (recentSearches.length) {
-      dropdown.classList.add('show');
-      recentSearches.forEach(search => {
-        const item = document.createElement('div');
-        item.classList.add('dropdown-item');
-        item.textContent = search;
-        item.onclick = () => {
-          document.getElementById('searchInput').value = search;
-          performSearch();
+    function performSearch() {
+      const query = document.getElementById('searchInput').value;
+      window.location.href = `https://www.google.com/search?q=${query}`;
+      saveSearch(query);
+    }
+
+    // Store and display recent searches
+    function saveSearch(query) {
+      let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+      searches = [query, ...searches.filter(search => search !== query)].slice(0, 5);
+      localStorage.setItem('recentSearches', JSON.stringify(searches));
+    }
+
+    function showRecentSearches() {
+      const dropdown = document.getElementById('dropdown');
+      dropdown.innerHTML = '';
+      const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+      if (recentSearches.length) {
+        dropdown.classList.add('show');
+        recentSearches.forEach(search => {
+          const item = document.createElement('div');
+          item.classList.add('dropdown-item');
+          item.textContent = search;
+          item.onclick = () => {
+            document.getElementById('searchInput').value = search;
+            performSearch();
+          };
+          dropdown.appendChild(item);
+        });
+      } else {
+        dropdown.classList.remove('show');
+      }
+    }
+
+    // Ripple effect on search bar
+    function addRipple(event) {
+      const ripple = document.createElement('span');
+      const size = Math.max(event.target.offsetWidth, event.target.offsetHeight);
+      const x = event.clientX - event.target.offsetLeft - size / 2;
+      const y = event.clientY - event.target.offsetTop - size / 2;
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      ripple.classList.add('ripple');
+      event.target.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    // Set background image
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.body.style.backgroundImage = `url(${e.target.result})`;
+          localStorage.setItem('backgroundImage', e.target.result);
         };
-        dropdown.appendChild(item);
-      });
-    } else {
-      dropdown.classList.remove('show');
+        reader.readAsDataURL(file);
+      }
     }
-  }
 
-  // Add ripple effect to search input
-  function addRipple(event) {
-    const ripple = document.createElement('span');
-    const size = Math.max(event.target.offsetWidth, event.target.offsetHeight);
-    const x = event.clientX - event.target.offsetLeft - size / 2;
-    const y = event.clientY - event.target.offsetTop - size / 2;
-    ripple.style.width = ripple.style.height = `${size}px`;
-    ripple.style.left = `${x}px`;
-    ripple.style.top = `${y}px`;
-    ripple.classList.add('ripple');
-    event.target.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
-  }
-
-  // Set background image
-  function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.body.style.backgroundImage = `url(${e.target.result})`;
-        localStorage.setItem('backgroundImage', e.target.result);
-      };
-      reader.readAsDataURL(file);
+    // Clear background image
+    function clearBackgroundImage() {
+      document.body.style.backgroundImage = '';
+      localStorage.removeItem('backgroundImage');
     }
-  }
 
-  // Clear background image
-  function clearBackgroundImage() {
-    document.body.style.backgroundImage = '';
-    localStorage.removeItem('backgroundImage');
-  }
-
-  // Load saved background image
-  window.onload = function() {
-    const savedBgImage = localStorage.getItem('backgroundImage');
-    if (savedBgImage) {
-      document.body.style.backgroundImage = `url(${savedBgImage})`;
-    }
-  };
-</script>
+    // Load saved background image
+    window.onload = function() {
+      const savedBgImage = localStorage.getItem('backgroundImage');
+      if (savedBgImage) {
+        document.body.style.backgroundImage = `url(${savedBgImage})`;
+      }
+    };
+  </script>
 
 </body>
 </html>
+
 
 
