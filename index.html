@@ -6,218 +6,117 @@
 <title>Buffyweb Search Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
+  /* General Styles */
   body {
     font-family: 'Roboto', sans-serif;
-    background-color: #ffffff;
-    color: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    overflow: hidden;
+    margin: 0;
   }
-
   .title {
     font-size: 96px;
     font-weight: bold;
-    margin-bottom: 70px;
+    margin-bottom: 40px;
   }
-
+  
+  /* Search Box Styles */
   .search-container {
-    text-align: center;
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
   }
 
   .search-box {
-    font-size: 32px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: 2px solid #ccc;
-    border-radius: 25px;
     width: 400px;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 30px;
+    border: 1px solid #ccc;
     outline: none;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    transition: border 0.3s ease;
+    transition: box-shadow 0.3s ease-in-out;
   }
 
   .search-box:focus {
-    border-color: #007bff;
+    box-shadow: 0 0 10px blue;
   }
 
-  /* Ripple Effect */
-  .search-box:active::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(0, 123, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    animation: ripple 0.6s ease-out;
-    pointer-events: none;
-  }
-
-  @keyframes ripple {
-    to {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0;
-    }
-  }
-
-  .search-icon {
-    margin-left: 10px;
-    padding: 10px;
-    background-color: #007bff;
-    border-radius: 15px;
-    cursor: pointer;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-  }
-
-  .search-icon:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  .search-icon img {
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Dropdown Styles */
   .dropdown {
     position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    max-height: 200px;
-    overflow-y: auto;
-    background-color: #ffffff;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    margin: 10px 0;
-    border-radius: 10px;
+    top: 70px;
+    width: 100%;
     display: none;
+    flex-direction: column;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
     z-index: 5;
   }
 
   .dropdown.show {
-    display: block;
+    display: flex;
   }
 
   .dropdown-item {
     padding: 10px;
-    cursor: pointer;
     font-size: 18px;
-    font-weight: normal;
-    color: #333;
-    transition: background-color 0.3s;
+    cursor: pointer;
   }
 
   .dropdown-item:hover {
-    background-color: #f0f0f0;
+    background-color: #ddd;
   }
 
-  /* Bottom Menu Button */
-  .menu-button {
+  /* Bottom Menu Styles */
+  .bottom-menu {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: #007bff;
+    display: flex;
+    gap: 10px;
+  }
+
+  .menu-button {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    background-color: #333;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    z-index: 10;
+    transition: background-color 0.3s;
   }
 
   .menu-button:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+    background-color: #555;
   }
 
-  .menu-button img {
+  .menu-action-button img {
     width: 30px;
     height: 30px;
   }
 
-  /* Sliding Menu */
-  .sliding-menu {
+  /* Overlay and Settings Menu */
+  .overlay {
     position: fixed;
-    bottom: 20px;
-    left: 100px;
-    height: 60px;
-    background-color: #f8f9fa;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 20px;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10;
   }
 
-  .sliding-menu.show {
-    width: calc(100% - 140px);
-    transform: scaleX(1);
+  .overlay.show {
+    display: block;
   }
 
-  /* Settings, News, Weather Buttons */
-  .menu-button-container {
-    display: flex;
-    gap: 15px;
-  }
-
-  .menu-action-button {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, box-shadow 0.3s;
-  }
-
-  .menu-action-button:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .menu-action-button img {
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Settings Menu */
   .settings-menu {
     position: fixed;
     top: 50%;
@@ -237,22 +136,52 @@
 
   .settings-menu.show {
     display: block;
-    opacity: 1;
   }
 
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-    display: none;
+  /* Background Settings */
+  .background-settings {
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    margin-bottom: 20px;
   }
 
-  .overlay.show {
-    display: block;
+  .background-settings h3 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .import-image input[type="file"] {
+    padding: 5px;
+  }
+
+  /* Button Style */
+  .button-64 {
+    align-items: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+    color: #FFFFFF;
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+    padding: 3px;
+    cursor: pointer;
+  }
+
+  .button-64 span {
+    background-color: rgb(5, 6, 45);
+    padding: 16px 24px;
+    border-radius: 6px;
+    width: 100%;
+    height: 100%;
+    transition: 300ms;
+  }
+
+  .button-64:hover span {
+    background: none;
   }
 
 </style>
@@ -263,50 +192,39 @@
 
 <div class="search-container">
   <input type="text" class="search-box" placeholder="Search here..." id="searchInput" onfocus="showRecentSearches()" onkeydown="handleEnter(event)">
-  <div class="search-icon" onclick="performSearch()">
-    <img src="https://img.icons8.com/ios-glyphs/30/ffffff/search--v1.png" alt="search icon">
-  </div>
   <div class="dropdown" id="dropdown"></div>
 </div>
 
-<!-- Menu Button at Bottom Left -->
-<div class="menu-button" onclick="toggleMenu()">
-  <img src="https://img.icons8.com/ios-glyphs/30/ffffff/menu--v1.png" alt="menu icon">
-</div>
-
-<!-- Sliding Menu -->
-<div class="sliding-menu" id="slidingMenu">
-  <div class="menu-button-container">
-    <!-- Settings Button -->
-    <div class="menu-action-button" onclick="openSettings()">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="settings icon">
-    </div>
-    <!-- News Button -->
-    <div class="menu-action-button" onclick="openNews()">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" alt="news icon">
-    </div>
-    <!-- Weather Button -->
-    <div class="menu-action-button" onclick="openWeather()">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/weather.png" alt="weather icon">
-    </div>
+<div class="bottom-menu">
+  <div class="menu-button" onclick="openSettings()">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="settings icon">
+  </div>
+  <div class="menu-button" onclick="openNews()">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" alt="news icon">
+  </div>
+  <div class="menu-button" onclick="openWeather()">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/weather.png" alt="weather icon">
   </div>
 </div>
 
-<!-- Settings Menu -->
-<div class="settings-menu" id="settingsMenu">
-  <h2>Settings</h2>
-  <p>Change your settings here.</p>
-  <!-- Add more settings options as needed -->
-</div>
-
-<!-- Overlay (for shading the background when menu is open) -->
+<!-- Overlay and Settings Menu -->
 <div class="overlay" id="overlay" onclick="closeSettingsMenu()"></div>
 
-<script>
-  function toggleMenu() {
-    document.getElementById('slidingMenu').classList.toggle('show');
-  }
+<div class="settings-menu" id="settingsMenu">
+  <div class="background-settings">
+    <h3>Background Image</h3>
+    <div class="import-image">
+      <label for="bgImageInput">Import Image:</label>
+      <input type="file" id="bgImageInput" accept="image/*" onchange="previewImage(event)">
+    </div>
+    <button class="button-64" role="button" onclick="applyBackgroundImage()">
+      <span class="text">Apply Background</span>
+    </button>
+  </div>
+</div>
 
+<script>
+  // Toggle settings menu
   function openSettings() {
     document.getElementById('settingsMenu').classList.add('show');
     document.getElementById('overlay').classList.add('show');
@@ -317,14 +235,16 @@
     document.getElementById('overlay').classList.remove('show');
   }
 
+  // Open News and Weather functions
   function openNews() {
-    alert('News clicked!');
+    alert('News button clicked!');
   }
 
   function openWeather() {
-    alert('Weather clicked!');
+    alert('Weather button clicked!');
   }
 
+  // Handle search functionality
   function handleEnter(event) {
     if (event.key === 'Enter') {
       performSearch();
@@ -337,6 +257,7 @@
     saveSearch(query);
   }
 
+  // Store and display recent searches
   function saveSearch(query) {
     let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
     searches = [query, ...searches.filter(search => search !== query)].slice(0, 5);
@@ -363,10 +284,40 @@
       dropdown.classList.remove('show');
     }
   }
+
+  // Background image preview and save
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.body.style.backgroundImage = `url(${e.target.result})`;
+        localStorage.setItem('backgroundImage', e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function applyBackgroundImage() {
+    const bgImage = localStorage.getItem('backgroundImage');
+    if (bgImage) {
+      document.body.style.backgroundImage = `url(${bgImage})`;
+      alert("Background image applied!");
+    } else {
+      alert("Please upload an image first.");
+    }
+  }
+
+  // Load saved settings on load
+  window.onload = function() {
+    const savedBgImage = localStorage.getItem('backgroundImage');
+    if (savedBgImage) {
+      document.body.style.backgroundImage = `url(${savedBgImage})`;
+    }
+  };
 </script>
 
 </body>
 </html>
-
 
 
