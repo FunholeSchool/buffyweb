@@ -1,341 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BuffyWeb</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            background-color: #f0f0f0; /* Default background color */
-            background-size: cover;
-            background-position: center;
-            transition: background-color 0.3s ease;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buffyweb Search Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-        .title-container {
-            position: relative;
-        }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #ffffff;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-        h1 {
-            font-size: 5em; /* Changed font size to 200px */
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
+  .title {
+    font-size: 96px;
+    font-weight: bold;
+    margin-bottom: 70px;
+  }
 
-        .search-container {
-            position: absolute;
-            top: calc(100% + 20px);
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
+  .search-container {
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
 
-        input[type="text"] {
-            padding: 15px;
-            border: none;
-            border-radius: 20px;
-            outline: none;
-            width: 400px;
-            margin-right: 10px;
-            font-size: 1.2em;
-            color: #333;
-            background-color: #fff;
-        }
+  .search-box {
+    font-size: 32px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    width: 400px;
+    outline: none;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: border 0.3s ease;
+  }
 
-        button {
-            padding: 15px 30px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.2em;
-        }
+  .search-box:focus {
+    border-color: #007bff;
+  }
 
-        .menu-button { /* Added styles for the three dots button */
-            padding: 15px 20px; /* Adjusted padding */
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 10px; /* Rounded corner square button */
-            cursor: pointer;
-            font-size: 1.2em;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
+  /* Ripple Effect */
+  .search-box:active::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(0, 123, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+  }
 
-        .menu {
-            display: none;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+  @keyframes ripple {
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+    }
+  }
 
-        .menu.active {
-            display: block;
-        }
+  .search-icon {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+  }
 
-        .menu-close-button {
-            background: linear-gradient(45deg, #ff0000, #990000);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2em;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  .search-icon:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  }
 
-        .dark-theme-button,
-        .upload-image-button,
-        .reset-background-button {
-            display: block;
-            margin-bottom: 10px;
-        }
+  .search-icon img {
+    width: 24px;
+    height: 24px;
+  }
 
-        #searchResults {
-            margin-top: 20px;
-            text-align: center;
-        }
+  /* Dropdown Styles */
+  .dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: none;
+    z-index: 5;
+  }
 
-        .font-size-dropdown {
-            margin-top: 10px;
-            font-size: 1.2em;
-        }
+  .dropdown.show {
+    display: block;
+  }
 
-        .upload-image-button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: background-color 0.3s ease;
-        }
+  .dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: normal;
+    color: #333;
+    transition: background-color 0.3s;
+  }
 
-        .upload-image-button:hover {
-            background-color: #0056b3;
-        }
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+  }
 
-        /* Added styles for the music player button */
-        .music-player-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
+  /* Bottom Menu Button */
+  .menu-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    z-index: 10;
+  }
 
-        .music-player-menu {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 200px;
-            z-index: 9998;
-            transform: translateX(300px);
-            transition: transform 0.3s;
-        }
+  .menu-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  }
 
-        .music-player-menu.active {
-            transform: translateX(0);
-        }
+  .menu-button img {
+    width: 30px;
+    height: 30px;
+  }
 
-        .music-service-button {
-            display: block;
-            padding: 10px 20px;
-            margin: 10px 0;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s;
-        }
+  /* Sliding Menu */
+  .sliding-menu {
+    position: fixed;
+    bottom: 20px;
+    left: 100px;
+    height: 60px;
+    background-color: #f8f9fa;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+  }
 
-        .music-service-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  .sliding-menu.show {
+    width: calc(100% - 140px);
+    transform: scaleX(1);
+  }
+
+  /* Settings, News, Weather Buttons */
+  .menu-button-container {
+    display: flex;
+    gap: 15px;
+  }
+
+  .menu-action-button {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+
+  .menu-action-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .menu-action-button img {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Settings Menu */
+  .settings-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 70%;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    display: none;
+    z-index: 20;
+    border-radius: 20px;
+    overflow: auto;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .settings-menu.show {
+    display: block;
+    opacity: 1;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: none;
+  }
+
+  .overlay.show {
+    display: block;
+  }
+
+</style>
 </head>
 <body>
-    <div class="title-container">
-        <h1>BuffyWeb</h1>
 
-        <!-- Search input and button -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Enter your search query" onkeypress="handleKeyPress(event)">
-            <button onclick="search()">Search</button>
-        </div>
+<div class="title">Buffyweb</div>
+
+<div class="search-container">
+  <input type="text" class="search-box" placeholder="Search here..." id="searchInput" onfocus="showRecentSearches()" onkeydown="handleEnter(event)">
+  <div class="search-icon" onclick="performSearch()">
+    <img src="https://img.icons8.com/ios-glyphs/30/ffffff/search--v1.png" alt="search icon">
+  </div>
+  <div class="dropdown" id="dropdown"></div>
+</div>
+
+<!-- Menu Button at Bottom Left -->
+<div class="menu-button" onclick="toggleMenu()">
+  <img src="https://img.icons8.com/ios-glyphs/30/ffffff/menu--v1.png" alt="menu icon">
+</div>
+
+<!-- Sliding Menu -->
+<div class="sliding-menu" id="slidingMenu">
+  <div class="menu-button-container">
+    <!-- Settings Button -->
+    <div class="menu-action-button" onclick="openSettings()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="settings icon">
     </div>
-
-    <!-- Menu button -->
-    <button class="menu-button" onclick="toggleMenu()">...</button>
-
-    <!-- Menu -->
-    <div class="menu" id="menu">
-        <button class="menu-close-button" onclick="toggleMenu()">X</button>
-        <button class="dark-theme-button" onclick="toggleDarkTheme()">Dark/Light Theme</button>
-        <input type="file" class="upload-image-button" onchange="handleImageUpload(event)">
-        <button class="reset-background-button" onclick="resetBackground()">Reset Background</button>
-        <button class="font-picker-button" onclick="showFontPicker()">Font Picker</button>
-        <div id="fontPicker" style="display: none;">
-            <input type="color" id="colorPicker" onchange="changeFontColor()">
-            <select class="font-size-dropdown" onchange="changeFontSize()">
-                <option value="48">Small</option>
-                <option value="125">Medium</option>
-                <option value="200">Large</option>
-            </select>
-        </div>
-        <select id="searchEngineDropdown" onchange="changeSearchEngine()">
-            <option value="https://www.bing.com/search?q=">Bing</option>
-            <option value="https://www.google.com/search?q=">Google</option>
-            <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
-            <option value="https://search.yahoo.com/search?p=">Yahoo</option>
-        </select>
+    <!-- News Button -->
+    <div class="menu-action-button" onclick="openNews()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" alt="news icon">
     </div>
-
-    <!-- Search results container -->
-    <div id="searchResults">
-        <!-- Search results will be displayed here -->
+    <!-- Weather Button -->
+    <div class="menu-action-button" onclick="openWeather()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/weather.png" alt="weather icon">
     </div>
+  </div>
+</div>
 
-    <!-- Music player button -->
-    <button class="music-player-button" onclick="toggleMusicPlayer()">▶️</button>
+<!-- Settings Menu -->
+<div class="settings-menu" id="settingsMenu">
+  <h2>Settings</h2>
+  <p>Change your settings here.</p>
+  <!-- Add more settings options as needed -->
+</div>
 
-    <!-- Music player menu -->
-    <div class="music-player-menu" id="musicPlayerMenu">
-        <button class="music-service-button">Connect to Amazon Music</button>
-        <button class="music-service-button">Connect to Spotify</button>
-        <button class="music-service-button">Connect to YouTube Music</button>
-        <button class="music-service-button">Connect to Apple Music</button>
-    </div>
+<!-- Overlay (for shading the background when menu is open) -->
+<div class="overlay" id="overlay" onclick="closeSettingsMenu()"></div>
 
-    <script>
-        // Retrieve background image URL from localStorage
-        var backgroundImageURL = localStorage.getItem('backgroundImageURL');
-        if (backgroundImageURL) {
-            document.body.style.backgroundImage = 'url(' + backgroundImageURL + ')';
-        }
+<script>
+  function toggleMenu() {
+    document.getElementById('slidingMenu').classList.toggle('show');
+  }
 
-        // Retrieve font color and size from localStorage
-        var fontColor = localStorage.getItem('fontColor') || '#333';
-        var fontSize = localStorage.getItem('fontSize') || '5em';
+  function openSettings() {
+    document.getElementById('settingsMenu').classList.add('show');
+    document.getElementById('overlay').classList.add('show');
+  }
 
-        // Apply retrieved font color and size to elements
-        document.querySelector('h1').style.color = fontColor;
-        document.querySelector('h1').style.fontSize = fontSize;
+  function closeSettingsMenu() {
+    document.getElementById('settingsMenu').classList.remove('show');
+    document.getElementById('overlay').classList.remove('show');
+  }
 
-        // Update color picker value to match current font color
-        document.getElementById('colorPicker').value = fontColor;
+  function openNews() {
+    alert('News clicked!');
+  }
 
-        // Retrieve search engine preference from localStorage
-        var searchEngine = localStorage.getItem('searchEngine') || 'https://www.google.com/search?q=';
+  function openWeather() {
+    alert('Weather clicked!');
+  }
 
-        function search() {
-            var query = document.getElementById('searchInput').value;
-            window.location.href = searchEngine + encodeURIComponent(query);
-        }
+  function handleEnter(event) {
+    if (event.key === 'Enter') {
+      performSearch();
+    }
+  }
 
-        function toggleMenu() {
-            var menuContainer = document.querySelector('.menu');
-            menuContainer.classList.toggle('active');
-        }
+  function performSearch() {
+    const query = document.getElementById('searchInput').value;
+    window.location.href = `https://www.google.com/search?q=${query}`;
+    saveSearch(query);
+  }
 
-        function toggleDarkTheme() {
-            var currentTheme = document.body.style.backgroundColor;
-            if (currentTheme === 'rgb(34, 34, 34)' || currentTheme === '#222') {
-                document.body.style.backgroundColor = '#f0f0f0';
-                document.body.style.color = '#333';
-            } else {
-                document.body.style.backgroundColor = '#222';
-                document.body.style.color = '#fff';
-            }
-        }
+  function saveSearch(query) {
+    let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    searches = [query, ...searches.filter(search => search !== query)].slice(0, 5);
+    localStorage.setItem('recentSearches', JSON.stringify(searches));
+  }
 
-        function handleImageUpload(event) {
-            var file = event.target.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var imageURL = e.target.result;
-                localStorage.setItem('backgroundImageURL', imageURL);
-                document.body.style.backgroundImage = 'url(' + imageURL + ')';
-            };
-            reader.readAsDataURL(file);
-        }
+  function showRecentSearches() {
+    const dropdown = document.getElementById('dropdown');
+    dropdown.innerHTML = '';
+    const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    if (recentSearches.length) {
+      dropdown.classList.add('show');
+      recentSearches.forEach(search => {
+        const item = document.createElement('div');
+        item.classList.add('dropdown-item');
+        item.textContent = search;
+        item.onclick = () => {
+          document.getElementById('searchInput').value = search;
+          performSearch();
+        };
+        dropdown.appendChild(item);
+      });
+    } else {
+      dropdown.classList.remove('show');
+    }
+  }
+</script>
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                search();
-            }
-        }
-
-        function resetBackground() {
-            localStorage.removeItem('backgroundImageURL');
-            document.body.style.backgroundImage = 'none';
-        }
-
-        function showFontPicker() {
-            var fontPicker = document.getElementById('fontPicker');
-            fontPicker.style.display = (fontPicker.style.display === 'none') ? 'block' : 'none';
-        }
-
-        function changeFontColor() {
-            var color = document.getElementById('colorPicker').value;
-            document.querySelector('h1').style.color = color;
-            localStorage.setItem('fontColor', color);
-        }
-
-        function changeFontSize() {
-            var size = document.querySelector('.font-size-dropdown').value;
-            document.querySelector('h1').style.fontSize = size + 'px';
-            localStorage.setItem('fontSize', size + 'px');
-        }
-
-        function changeSearchEngine() {
-            searchEngine = document.getElementById('searchEngineDropdown').value;
-            localStorage.setItem('searchEngine', searchEngine);
-        }
-
-        // Toggle music player menu
-        function toggleMusicPlayer() {
-            var musicPlayerMenu = document.getElementById('musicPlayerMenu');
-            musicPlayerMenu.classList.toggle('active');
-        }
-    </script>
 </body>
 </html>
+
+
+
