@@ -97,7 +97,7 @@
       background-color: #555;
     }
 
-    .menu-action-button img {
+    .menu-button img {
       width: 30px;
       height: 30px;
     }
@@ -143,6 +143,21 @@
       background-color: #f1f1f1;
     }
 
+    /* Slide-in Menu Blue Buttons */
+    .blue-button {
+      background-color: #007BFF;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .blue-button:hover {
+      background-color: #0056b3;
+    }
+
     /* Overlay */
     .overlay {
       position: fixed;
@@ -159,7 +174,32 @@
       display: block;
     }
 
-    /* Button Style */
+    /* Settings Menu */
+    .settings-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .settings-menu.open {
+      display: flex;
+    }
+
+    .settings-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+    }
+
     .button-64 {
       align-items: center;
       background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
@@ -211,7 +251,6 @@
         opacity: 0;
       }
     }
-
   </style>
 </head>
 <body>
@@ -229,139 +268,81 @@
     </div>
   </div>
 
-  <!-- Overlay and Side Menu -->
-  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  <!-- Overlay for settings menu -->
+  <div class="overlay" id="overlay" onclick="closeSettingsMenu()"></div>
 
+  <!-- Side Menu -->
   <div class="side-menu" id="sideMenu">
     <div class="close-btn" onclick="closeMenu()">×</div>
     <ul>
-      <li onclick="openSettings()">Settings</li>
-      <li onclick="openNews()">News</li>
-      <li onclick="openWeather()">Weather</li>
+      <li class="blue-button" onclick="openSettings()">Settings</li>
+      <li class="blue-button" onclick="openNews()">News</li>
+      <li class="blue-button" onclick="openWeather()">Weather</li>
     </ul>
   </div>
 
   <!-- Settings Menu -->
   <div class="settings-menu" id="settingsMenu">
-    <div class="background-settings">
-      <h3>Background Image</h3>
-      <div class="import-image">
-        <label for="bgImageInput">Import Image:</label>
-        <input type="file" id="bgImageInput" accept="image/*" onchange="previewImage(event)">
+    <div class="settings-content">
+      <div>
+        <h2 style="font-weight: bold; font-size: 24px;">Background Image</h2>
+        <input type="file" accept="image/*" onchange="previewImage(event)">
+        <button class="button-64" onclick="clearBackgroundImage()">
+          <span class="text">Clear Background</span>
+        </button>
       </div>
-      <button class="button-64" role="button" onclick="clearBackgroundImage()">
-        <span class="text">Clear Background</span>
-      </button>
     </div>
   </div>
 
   <script>
-    // Toggle side menu (open/close)
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+
     function toggleMenu() {
-      const menu = document.getElementById('sideMenu');
-      const overlay = document.getElementById('overlay');
-      const isOpen = menu.classList.contains('open');
-      if (isOpen) {
-        closeMenu();
-      } else {
-        menu.classList.add('open');
-        overlay.classList.add('show');
-      }
+      const sideMenu = document.getElementById('sideMenu');
+      sideMenu.classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('show');
     }
 
-    // Close the menu
     function closeMenu() {
-      const menu = document.getElementById('sideMenu');
-      const overlay = document.getElementById('overlay');
-      menu.classList.remove('open');
-      overlay.classList.remove('show');
+      document.getElementById('sideMenu').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
     }
 
-    // Handle search functionality
-    function handleEnter(event) {
-      if (event.key === 'Enter') {
-        performSearch();
-      }
+    function openSettings() {
+      document.getElementById('settingsMenu').classList.add('open');
+      document.getElementById('overlay').classList.add('show');
     }
 
-    function performSearch() {
-      const query = document.getElementById('searchInput').value;
-      window.location.href = `https://www.google.com/search?q=${query}`;
-      saveSearch(query);
+    function closeSettingsMenu() {
+      document.getElementById('settingsMenu').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
     }
 
-    // Store and display recent searches
-    function saveSearch(query) {
-      let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-      searches = [query, ...searches.filter(search => search !== query)].slice(0, 5);
-      localStorage.setItem('recentSearches', JSON.stringify(searches));
-    }
-
-    function showRecentSearches() {
-      const dropdown = document.getElementById('dropdown');
-      dropdown.innerHTML = '';
-      const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-      if (recentSearches.length) {
-        dropdown.classList.add('show');
-        recentSearches.forEach(search => {
-          const item = document.createElement('div');
-          item.classList.add('dropdown-item');
-          item.textContent = search;
-          item.onclick = () => {
-            document.getElementById('searchInput').value = search;
-            performSearch();
-          };
-          dropdown.appendChild(item);
-        });
-      } else {
-        dropdown.classList.remove('show');
-      }
-    }
-
-    // Ripple effect on search bar
-    function addRipple(event) {
-      const ripple = document.createElement('span');
-      const size = Math.max(event.target.offsetWidth, event.target.offsetHeight);
-      const x = event.clientX - event.target.offsetLeft - size / 2;
-      const y = event.clientY - event.target.offsetTop - size / 2;
-      ripple.style.width = ripple.style.height = `${size}px`;
-      ripple.style.left = `${x}px`;
-      ripple.style.top = `${y}px`;
-      ripple.classList.add('ripple');
-      event.target.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    }
-
-    // Set background image
     function previewImage(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          document.body.style.backgroundImage = `url(${e.target.result})`;
-          localStorage.setItem('backgroundImage', e.target.result);
+        reader.onload = function () {
+          document.body.style.backgroundImage = `url(${reader.result})`;
+          localStorage.setItem('backgroundImage', reader.result);
         };
         reader.readAsDataURL(file);
       }
     }
 
-    // Clear background image
     function clearBackgroundImage() {
       document.body.style.backgroundImage = '';
       localStorage.removeItem('backgroundImage');
     }
 
-    // Load saved background image
-    window.onload = function() {
-      const savedBgImage = localStorage.getItem('backgroundImage');
-      if (savedBgImage) {
-        document.body.style.backgroundImage = `url(${savedBgImage})`;
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedBackground = localStorage.getItem('backgroundImage');
+      if (savedBackground) {
+        document.body.style.backgroundImage = `url(${savedBackground})`;
       }
-    };
+    });
   </script>
 
 </body>
 </html>
-
-
 
