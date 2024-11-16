@@ -25,6 +25,7 @@
       font-size: 96px;
       font-weight: bold;
       margin-bottom: 40px;
+      text-align: center;
     }
 
     /* Search Box Styles */
@@ -188,6 +189,39 @@
     .settings-menu button:hover {
       background: linear-gradient(144deg, #AF40FF, #5B42F3, #00DDEB);
     }
+
+    /* Search Settings Menu Styles */
+    .search-settings-menu {
+      background-color: white;
+      width: 400px;
+      height: auto;
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .search-settings-menu h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .search-settings-menu button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .search-settings-menu button:hover {
+      background: linear-gradient(144deg, #AF40FF, #5B42F3, #00DDEB);
+    }
   </style>
 </head>
 <body>
@@ -227,42 +261,81 @@
     </div>
   </div>
 
+  <!-- Search Settings Menu -->
+  <div class="search-settings-menu" id="searchSettingsMenu">
+    <h2>Search Settings</h2>
+    <button onclick="clearSearchHistory()">Clear Search History</button>
+    <button onclick="changeSearchEngine()">Change Search Engine</button>
+  </div>
+
   <script>
-    // Toggle Bottom Menu
+    // Detect iOS or Android and adjust layout
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes("iphone") || userAgent.includes("ipad") || userAgent.includes("ipod")) {
+      document.body.style.fontSize = "16px";
+      document.body.style.padding = "10px";
+    } else if (userAgent.includes("android")) {
+      document.body.style.fontSize = "16px";
+      document.body.style.padding = "10px";
+    }
+
+    // Toggle bottom menu visibility
     function toggleBottomMenu() {
-      const bottomMenu = document.getElementById('bottomMenu');
-      bottomMenu.classList.toggle('open');
+      const menu = document.getElementById('bottomMenu');
+      menu.classList.toggle('open');
     }
 
-    // Search on Enter
-    function handleEnter(event) {
-      if (event.key === 'Enter') {
-        const query = document.getElementById('searchInput').value;
-        if (query.trim()) {
-          window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        }
+    // Open Settings
+    function openSettings() {
+      document.getElementById('settingsOverlay').classList.add('active');
+    }
+
+    // Close Settings
+    function closeSettings(event) {
+      if (event.target === document.getElementById('settingsOverlay')) {
+        document.getElementById('settingsOverlay').classList.remove('active');
       }
     }
 
-    function startSearch() {
-      const query = document.getElementById('searchInput').value;
-      if (query.trim()) {
-        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-      }
+    // Upload Background Image
+    function uploadBackground() {
+      const fileInput = document.getElementById('backgroundInput');
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        document.body.style.background = `url(${e.target.result}) center center / cover`;
+        localStorage.setItem('backgroundImage', e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
+
+    // Clear Background Image
+    function clearBackground() {
+      document.body.style.background = '';
+      localStorage.removeItem('backgroundImage');
+    }
+
+    // Restore Background from LocalStorage
+    window.onload = function() {
+      const savedBackground = localStorage.getItem('backgroundImage');
+      if (savedBackground) {
+        document.body.style.background = `url(${savedBackground}) center center / cover`;
+      }
+    };
 
     // Add Ripple Effect
     function addRipple(event) {
-      const ripple = document.createElement('span');
-      const size = Math.max(event.target.offsetWidth, event.target.offsetHeight);
+      const ripple = document.createElement("div");
+      const size = Math.max(event.target.clientWidth, event.target.clientHeight);
       const x = event.clientX - event.target.offsetLeft - size / 2;
       const y = event.clientY - event.target.offsetTop - size / 2;
 
       ripple.style.width = ripple.style.height = `${size}px`;
       ripple.style.left = `${x}px`;
       ripple.style.top = `${y}px`;
+      ripple.classList.add("ripple");
 
-      ripple.classList.add('ripple');
       event.target.appendChild(ripple);
 
       setTimeout(() => {
@@ -270,40 +343,26 @@
       }, 600);
     }
 
-    // Settings Menu
-    function openSettings() {
-      document.getElementById('settingsOverlay').classList.add('active');
-    }
-
-    function closeSettings(event) {
-      document.getElementById('settingsOverlay').classList.remove('active');
-    }
-
-    function uploadBackground() {
-      const input = document.getElementById('backgroundInput');
-      const file = input.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.body.style.background = `url(${e.target.result}) center center / cover`;
-          localStorage.setItem('backgroundImage', e.target.result);
-        };
-        reader.readAsDataURL(file);
+    // Handle Enter Key for Search
+    function handleEnter(event) {
+      if (event.key === 'Enter') {
+        startSearch();
       }
     }
 
-    function clearBackground() {
-      document.body.style.background = '';
-      localStorage.removeItem('backgroundImage');
-    }
-
-    // Restore Background on Load
-    window.onload = function() {
-      const savedBackground = localStorage.getItem('backgroundImage');
-      if (savedBackground) {
-        document.body.style.background = `url(${savedBackground}) center center / cover`;
+    // Start Search (Direct Navigation for Domain)
+    function startSearch() {
+      const query = document.getElementById('searchInput').value;
+      if (query) {
+        // Check if the query contains a domain (e.g., example.com)
+        const domainPattern = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (domainPattern.test(query)) {
+          window.location.href = `https://${query}`;
+        } else {
+          window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        }
       }
-    };
+    }
 
     // Placeholder Functions for Menu Buttons
     function openNews() {
@@ -312,6 +371,15 @@
 
     function openWeather() {
       alert('Weather menu clicked!');
+    }
+
+    // Search Settings Menu Actions
+    function clearSearchHistory() {
+      alert("Search history cleared!");
+    }
+
+    function changeSearchEngine() {
+      alert("Change search engine!");
     }
   </script>
 </body>
