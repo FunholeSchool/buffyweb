@@ -15,8 +15,12 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       transition: background 0.3s;
     }
+
     .title {
       font-size: 96px;
       font-weight: bold;
@@ -45,10 +49,53 @@
       box-shadow: 0 0 10px blue;
     }
 
+    /* Ripple Effect for Search Box */
+    .search-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 0, 255, 0.5);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Hamburger Button */
+    .hamburger-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: #007bff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .hamburger-button img {
+      width: 30px;
+      height: 30px;
+    }
+
     /* Bottom Menu Styles */
     .bottom-menu {
       position: fixed;
-      bottom: -100px;  /* Hidden initially */
+      bottom: -100px;
       left: 0;
       width: 100%;
       height: 100px;
@@ -57,7 +104,7 @@
       justify-content: center;
       align-items: center;
       transition: bottom 0.3s ease;
-      z-index: 1000;
+      z-index: 100;
     }
 
     .bottom-menu.open {
@@ -86,128 +133,79 @@
       height: 30px;
     }
 
-    /* Slide-in Menu */
-    .side-menu {
+    /* Settings Menu Styles */
+    .settings-overlay {
       position: fixed;
       top: 0;
-      left: -300px;
-      width: 300px;
+      left: 0;
+      width: 100%;
       height: 100%;
-      background-color: #fff;
-      box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
-      transition: left 0.3s ease-in-out;
-      z-index: 100;
-    }
-
-    .side-menu.open {
-      left: 0;
-    }
-
-    .side-menu .close-btn {
-      font-size: 30px;
-      padding: 20px;
-      cursor: pointer;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-
-    .side-menu ul {
-      list-style-type: none;
-      padding: 0;
-      margin-top: 50px;
-    }
-
-    .side-menu ul li {
-      padding: 15px;
-      cursor: pointer;
-    }
-
-    .side-menu ul li:hover {
-      background-color: #f1f1f1;
-    }
-
-    /* Overlay */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
       background-color: rgba(0, 0, 0, 0.5);
       display: none;
-      z-index: 90;
-    }
-
-    .overlay.show {
-      display: block;
-    }
-
-    /* Settings Menu */
-    .settings-menu {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 100;
       justify-content: center;
       align-items: center;
+      z-index: 200;
     }
 
-    .settings-menu.open {
+    .settings-overlay.active {
       display: flex;
     }
 
-    .settings-content {
-      background: #fff;
+    .settings-menu {
+      background-color: white;
+      width: 400px;
+      height: auto;
+      border-radius: 20px;
       padding: 20px;
-      border-radius: 10px;
-      width: 80%;
-      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* Ripple effect */
-    .search-box:focus {
-      box-shadow: 0 0 10px blue;
+    .settings-menu h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
 
-    .search-box {
-      position: relative;
-      overflow: hidden;
+    .settings-menu input[type="file"] {
+      margin-bottom: 20px;
     }
 
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(0, 0, 255, 0.5);
-      transform: scale(0);
-      animation: ripple-animation 0.6s linear;
+    .settings-menu button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
+    .settings-menu button:hover {
+      background: linear-gradient(144deg, #AF40FF, #5B42F3, #00DDEB);
     }
-
   </style>
 </head>
 <body>
-
   <div class="title">Buffyweb</div>
 
   <div class="search-container">
-    <input type="text" class="search-box" placeholder="Search here..." id="searchInput" onfocus="showRecentSearches()" onkeydown="handleEnter(event)" onclick="addRipple(event)">
-    <div class="dropdown" id="dropdown"></div>
+    <input type="text" class="search-box" placeholder="Search here..." id="searchInput" onkeydown="handleEnter(event)" onclick="addRipple(event)">
   </div>
 
+  <!-- Hamburger Button -->
+  <div class="hamburger-button" onclick="toggleBottomMenu()">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/menu.png" alt="menu icon">
+  </div>
+
+  <!-- Bottom Menu -->
   <div class="bottom-menu" id="bottomMenu">
     <div class="button" onclick="openSettings()">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="settings icon">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/image.png" alt="settings icon">
     </div>
     <div class="button" onclick="openNews()">
       <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" alt="news icon">
@@ -215,88 +213,45 @@
     <div class="button" onclick="openWeather()">
       <img src="https://img.icons8.com/ios-filled/50/ffffff/weather.png" alt="weather icon">
     </div>
+    <div class="button" onclick="startSearch()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/search.png" alt="search icon">
+    </div>
   </div>
 
-  <!-- Overlay for settings menu -->
-  <div class="overlay" id="overlay" onclick="closeSettingsMenu()"></div>
-
-  <!-- Side Menu -->
-  <div class="side-menu" id="sideMenu">
-    <div class="close-btn" onclick="closeMenu()">×</div>
-    <ul>
-      <li onclick="openSettings()">Settings</li>
-      <li onclick="openNews()">News</li>
-      <li onclick="openWeather()">Weather</li>
-    </ul>
-  </div>
-
-  <!-- Settings Menu -->
-  <div class="settings-menu" id="settingsMenu">
-    <div class="settings-content">
-      <div>
-        <h2 style="font-weight: bold; font-size: 24px;">Background Image</h2>
-        <input type="file" accept="image/*" onchange="previewImage(event)">
-        <button class="button-64" onclick="clearBackgroundImage()">
-          <span class="text">Clear Background</span>
-        </button>
-      </div>
+  <!-- Settings Overlay -->
+  <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+    <div class="settings-menu" onclick="event.stopPropagation()">
+      <h2>Background Image</h2>
+      <input type="file" id="backgroundInput" accept="image/*" onchange="uploadBackground()">
+      <button onclick="clearBackground()">Clear Background</button>
     </div>
   </div>
 
   <script>
-    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-
+    // Toggle Bottom Menu
     function toggleBottomMenu() {
       const bottomMenu = document.getElementById('bottomMenu');
       bottomMenu.classList.toggle('open');
     }
 
-    function openSettings() {
-      document.getElementById('settingsMenu').classList.add('open');
-      document.getElementById('overlay').classList.add('show');
-    }
-
-    function closeSettingsMenu() {
-      document.getElementById('settingsMenu').classList.remove('open');
-      document.getElementById('overlay').classList.remove('show');
-    }
-
-    function closeMenu() {
-      document.getElementById('sideMenu').classList.remove('open');
-      document.getElementById('overlay').classList.remove('show');
-    }
-
-    function previewImage(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function () {
-          document.body.style.backgroundImage = `url(${reader.result})`;
-          localStorage.setItem('backgroundImage', reader.result);
-        };
-        reader.readAsDataURL(file);
+    // Search on Enter
+    function handleEnter(event) {
+      if (event.key === 'Enter') {
+        const query = document.getElementById('searchInput').value;
+        if (query.trim()) {
+          window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        }
       }
     }
 
-    function clearBackgroundImage() {
-      document.body.style.backgroundImage = '';
-      localStorage.removeItem('backgroundImage');
+    function startSearch() {
+      const query = document.getElementById('searchInput').value;
+      if (query.trim()) {
+        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const savedBackground = localStorage.getItem('backgroundImage');
-      if (savedBackground) {
-        document.body.style.backgroundImage = `url(${savedBackground})`;
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-      // Show the bottom menu after a delay
-      setTimeout(function () {
-        toggleBottomMenu(); // Open the bottom menu after 3 seconds
-      }, 3000);
-    });
-
+    // Add Ripple Effect
     function addRipple(event) {
       const ripple = document.createElement('span');
       const size = Math.max(event.target.offsetWidth, event.target.offsetHeight);
@@ -314,7 +269,50 @@
         ripple.remove();
       }, 600);
     }
-  </script>
 
+    // Settings Menu
+    function openSettings() {
+      document.getElementById('settingsOverlay').classList.add('active');
+    }
+
+    function closeSettings(event) {
+      document.getElementById('settingsOverlay').classList.remove('active');
+    }
+
+    function uploadBackground() {
+      const input = document.getElementById('backgroundInput');
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.body.style.background = `url(${e.target.result}) center center / cover`;
+          localStorage.setItem('backgroundImage', e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearBackground() {
+      document.body.style.background = '';
+      localStorage.removeItem('backgroundImage');
+    }
+
+    // Restore Background on Load
+    window.onload = function() {
+      const savedBackground = localStorage.getItem('backgroundImage');
+      if (savedBackground) {
+        document.body.style.background = `url(${savedBackground}) center center / cover`;
+      }
+    };
+
+    // Placeholder Functions for Menu Buttons
+    function openNews() {
+      alert('News menu clicked!');
+    }
+
+    function openWeather() {
+      alert('Weather menu clicked!');
+    }
+  </script>
 </body>
 </html>
