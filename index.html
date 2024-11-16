@@ -134,7 +134,7 @@
       height: 30px;
     }
 
-    /* Settings Menu Styles */
+    /* Settings Overlay */
     .settings-overlay {
       position: fixed;
       top: 0;
@@ -261,20 +261,10 @@
     </div>
   </div>
 
-  <!-- Search Settings Menu -->
-  <div class="search-settings-menu" id="searchSettingsMenu">
-    <h2>Search Settings</h2>
-    <button onclick="clearSearchHistory()">Clear Search History</button>
-    <button onclick="changeSearchEngine()">Change Search Engine</button>
-  </div>
-
   <script>
-    // Detect iOS or Android and adjust layout
+    // Detect iOS or Android and adjust layout only for mobile devices
     const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.includes("iphone") || userAgent.includes("ipad") || userAgent.includes("ipod")) {
-      document.body.style.fontSize = "16px";
-      document.body.style.padding = "10px";
-    } else if (userAgent.includes("android")) {
+    if (userAgent.includes("iphone") || userAgent.includes("ipad") || userAgent.includes("ipod") || userAgent.includes("android")) {
       document.body.style.fontSize = "16px";
       document.body.style.padding = "10px";
     }
@@ -371,15 +361,6 @@
 
     function openWeather() {
       alert('Weather menu clicked!');
-    }
-
-    // Search Settings Menu Actions
-    function clearSearchHistory() {
-      alert("Search history cleared!");
-    }
-
-    function changeSearchEngine() {
-      alert("Change search engine!");
     }
   </script>
 </body>
